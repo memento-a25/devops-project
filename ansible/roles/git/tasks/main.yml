@@ -1,0 +1,16 @@
+- name: Installing Git
+  apt:
+    name: git
+    state: present
+    update_cache: yes
+
+
+- name: Checking if Git installed correctly
+  command: git --version
+  register: git_version
+  ignore_errors: yes
+
+
+- name: Display Output
+  debug:
+    var: git_version.stdout

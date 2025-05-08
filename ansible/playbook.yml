@@ -1,0 +1,9 @@
+---
+- name: Prepare environment
+  hosts: app
+  become: yes
+
+  roles:
+    - docker
+    - act
+    - git

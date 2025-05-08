@@ -1,0 +1,13 @@
+- name: Download and install Act
+  shell: curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash -s -- -b /usr/local/bin
+  args:
+    creates: /usr/local/bin/act
+
+- name: Check if act installed correctly
+  command: act --version
+  register: act_version
+  ignore_errors: yes
+
+- name: Display Output
+  debug:
+    var: act_version.stdout

@@ -1,0 +1,2 @@
+- name: Deploying app via Docker-Compose
+  shell: docker compose -f /root/devop-blog-project/docker-compose.yml up -d
