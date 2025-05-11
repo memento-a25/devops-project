@@ -1,5 +1,5 @@
 from flask import Flask
-from prometheus_client import Counter, genereate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
 import time
 
 app = Flask(__name__)
@@ -11,7 +11,7 @@ def hello():
   REQUESTS_COUNT.inc()
   return "Hello from Flask-app!"
 
-@app.router('/metrics')
+@app.route('/metrics')
 def metrics():
   return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
 
