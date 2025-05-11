@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./app
+    ports:
+      - "80:5000"
+    environment:
+      - DATABASE_URL=postgresql://test:test@db/test
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"

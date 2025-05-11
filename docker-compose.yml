@@ -2,32 +2,29 @@ version: '3.8'
 
 services:
   app:
-    build: ./app
+    image: ${DOCKERHUB_USERNAME}/flask-app:latest
     ports:
       - "80:5000"
+    environment:
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db/${DB_NAME}
     depends_on:
       - db
 
   db:
-    image: postgres:15
-    environment:
-      POSTGRES_DB: blog
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
+    image: ${DOCKERHUB_USERNAME}/postgres-custom:latest
     volumes:
       - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
 
   prometheus:
     image: prom/prometheus
     volumes:
-      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.tml
+      - ./monitoring/prometheus:/etc/prometheus
     ports:
       - "9090:9090"
-
-  node_exporter:
-    image: prom/node-exporter
-    ports:
-      - "9100:9100"
 
   grafana:
     image: grafana/grafana

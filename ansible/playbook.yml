@@ -5,5 +5,4 @@
 
   roles:
     - docker
-    - act
     - git

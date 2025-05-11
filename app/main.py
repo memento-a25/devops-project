@@ -8,7 +8,7 @@ REQUEST_COUNT = Counter('app_requests_total', 'Total number of requests')
 
 @app.route('/')
 def hello():
-  REQUESTS_COUNT.inc()
+  REQUEST_COUNT.inc()
   return "Hello from Flask-app!"
 
 @app.route('/metrics')

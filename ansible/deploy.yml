@@ -1,0 +1,27 @@
+- name: Deploy Application
+  hosts: all
+  become: yes
+  vars_files:
+    - vars/secrets.yml # Enabling Encrypted file
+
+  tasks:
+    - name: Login to Docker Hub
+      docker_login:
+        username: "{{ dockerhub_username }}"
+        password: "{{ dockerhub_password }}"
+      when: dockerhub_password is defined
+
+    - name: Pull latest images
+      docker_compose:
+        project_src: /root/devop-blog-project
+        pull: yes
+        files:
+          - /root/devop-blog-project/docker-compose.yml
+
+    - name: Ensure containers are running
+      docker_compose:
+        project_src: /root/devop-blog-project
+        files:
+          - /root/devop-blog-project/docker-compose.yml
+        state: present
+
