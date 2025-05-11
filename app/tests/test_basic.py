@@ -1,5 +1,5 @@
 import pytest
-from app.main import app, REQUEST_COUNT # Import app + counter
+from ..main import app, REQUEST_COUNT # Import app + counter
 
 @pytest.fixture
 def client():

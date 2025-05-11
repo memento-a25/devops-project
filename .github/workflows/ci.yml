@@ -29,7 +29,6 @@ jobs:
         run: |
           docker-compose -f docker-compose.ci.yml up --build -d
           sleep 15 # Wait for containers to initialise
-          docker-compose ps
           curl --fail http://localhost:80
           curl --fail http://localhost:9090/metrics
 
@@ -67,3 +66,12 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/postgres-custom:latest
           labels: |
             org.opencontainers.image.source=$GITHUB_REPOSITORY_URL
+
+
+  deploy:
+    needs: [test, build-test, build-and-push]
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy via Ansible
+        run: ansible-playbook ansible/deploy.yml
