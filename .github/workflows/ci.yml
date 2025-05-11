@@ -25,9 +25,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose-plugin # Installing Docker Compose
+          docker compose version # Check Compose installation
+
       - name: Build and Test Containers
         run: |
-          docker-compose -f docker-compose.ci.yml up --build -d
+          docker compose -f docker-compose.ci.yml up --build -d
           sleep 15 # Wait for containers to initialise
           curl --fail http://localhost:80
           curl --fail http://localhost:9090/metrics
