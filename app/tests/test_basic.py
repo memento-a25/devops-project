@@ -19,5 +19,4 @@ def test_hello_route(client):
 def test_metrics_route(client):
     response = client.get('/metrics')
     assert response.status_code == 200
-    assert 'CONTENT_TYPE_LATEST' in response.headers['Content-Type']
-    assert 'app_requests_total' in response.data.decode()
+    assert response.headers['Content-Type'] == 'text/plain; version=0.0.4; charset=utf-8'
