@@ -70,4 +70,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Deploy via Ansible
-        run: ansible-playbook ansible/deploy.yml
+        run: ansible-playbook -i ansible/inventory/hosts.ini  ansible/deploy.yml
