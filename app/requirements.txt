@@ -3,3 +3,5 @@ prometheus_client==0.21.1
 psycopg2-binary==2.9.10
 pytest==8.3.5
 gunicorn==23.0.0
+requests==2.32.3
+prometheus-client==0.21.0
