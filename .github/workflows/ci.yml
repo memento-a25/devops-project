@@ -38,6 +38,24 @@ jobs:
           curl --fail http://localhost:80
           curl --fail http://localhost:9090/metrics
 
+  integration-test:
+    needs: [test, build-test]
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start containers
+        run: docker-compose -f docker-compose.ci.yml up -d
+      - name: Wait for initialization
+        run: sleep 30 # Grafana needs time to initialize
+      - name: Run integration tests
+        run: |
+          pip install -r app/requirements.txt
+          pytest app/tests/test_integration.py -v
+        env:
+        # Variables to access Grafana
+          GRAFANA_USER: admin
+          GRAFANA_PASSWORD: admin
+
 
   build-and-push:
     needs: [test, build-test]
