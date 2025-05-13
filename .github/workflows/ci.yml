@@ -33,10 +33,19 @@ jobs:
 
       - name: Build and Test Containers
         run: |
+          # Stop remaining containers (if exists)
+          docker compose -f docker-compose.ci.yml down --remove-orphans || true
+
+          # Run containers
           docker compose -f docker-compose.ci.yml up --build -d
           sleep 15 # Wait for containers to initialise
           curl --fail http://localhost:80
           curl --fail http://localhost:9090/metrics
+
+      - name: Cleanup containers
+        if: always() # Ignore errors
+        run: |
+          docker compose -f docker-compose.ci.yml down --remove-orphans
 
   integration-test:
     needs: [unit-test, build-test]
