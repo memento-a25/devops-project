@@ -3,7 +3,7 @@ import requests
 
 def test_grafana_prometheus_connection():
     response = requests.get(
-        "http://localhost:3000/api/datasources",
+        "http://grafana:3000/api/datasources",
         auth=("admin", "admin")  # Дефолтные креды Grafana
     )
     
