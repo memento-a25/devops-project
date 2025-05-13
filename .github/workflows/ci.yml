@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Start containers
-        run: docker-compose -f docker-compose.ci.yml up -d
+        run: docker compose -f docker-compose.ci.yml up -d
       - name: Wait for initialization
         run: sleep 30 # Grafana needs time to initialize
       - name: Run integration tests
