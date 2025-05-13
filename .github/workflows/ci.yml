@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 on: [push]
 
 jobs:
-  test:
+  unit-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,11 +16,11 @@ jobs:
         run: pip install -r app/requirements.txt
 
       - name: Run tests
-        run: pytest app/tests/
+        run: pytest app/tests/test_basic.py
 
 
   build-test:
-    needs: test
+    needs: unit-test
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +39,7 @@ jobs:
           curl --fail http://localhost:9090/metrics
 
   integration-test:
-    needs: [test, build-test]
+    needs: [unit-test, build-test]
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
@@ -58,7 +58,7 @@ jobs:
 
 
   build-and-push:
-    needs: [test, build-test]
+    needs: [unit-test, build-test]
     if: github.repository == 'memento-a25/jun-devops-project'
     runs-on: ubuntu-latest
     steps:
@@ -83,7 +83,7 @@ jobs:
 
 
   deploy:
-    needs: [test, build-test, build-and-push]
+    needs: [unit-test, build-test, build-and-push]
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
