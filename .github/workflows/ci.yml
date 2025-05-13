@@ -58,7 +58,7 @@ jobs:
 
 
   build-and-push:
-    needs: [unit-test, build-test]
+    needs: [unit-test, build-test, integration-test]
     if: github.repository == 'memento-a25/jun-devops-project'
     runs-on: ubuntu-latest
     steps:
@@ -83,7 +83,7 @@ jobs:
 
 
   deploy:
-    needs: [unit-test, build-test, build-and-push]
+    needs: [unit-test, build-test, integration-test, build-and-push]
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
