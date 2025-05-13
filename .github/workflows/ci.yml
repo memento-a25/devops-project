@@ -31,6 +31,12 @@ jobs:
           sudo apt-get install -y docker-compose-plugin # Installing Docker Compose
           docker compose version # Check Compose installation
 
+  
+      - name: Kill process on port 3000
+        run: |
+          sudo lsof -ti :3000 | xargs -r sudo kill -9
+
+
       - name: Cleanup previous containers (force)
         run: |
           docker compose -f docker-compose.ci.yml down --rmi local --volumes --remove-orphans || true
