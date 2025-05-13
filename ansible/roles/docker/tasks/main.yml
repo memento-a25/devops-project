@@ -12,6 +12,7 @@
       - curl
       - gnupg
       - lsb-release
+      - pyhon3-pip
     state: present
     update_cache: no
     force_apt_get: yes
@@ -67,3 +68,11 @@
 - name: Display Output
   debug:
     var: compose_version.stdout
+
+
+- name: Install Docker Python module
+  pip:
+    name: docker
+    state: present
+    executable: pip3
+  
