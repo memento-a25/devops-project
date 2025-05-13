@@ -31,31 +31,45 @@ jobs:
           sudo apt-get install -y docker-compose-plugin # Installing Docker Compose
           docker compose version # Check Compose installation
 
+      - name: Cleanup previous containers (force)
+        run: |
+          docker compose -f docker-compose.ci.yml down --rmi local --volumes --remove-orphans || true
+          docker network prune -f
+          docker container prune -f
+
       - name: Build and Test Containers
         run: |
-          # Stop remaining containers (if exists)
-          docker compose -f docker-compose.ci.yml down --remove-orphans || true
-
-          # Run containers
           docker compose -f docker-compose.ci.yml up --build -d
           sleep 15 # Wait for containers to initialise
           curl --fail http://localhost:80
           curl --fail http://localhost:9090/metrics
 
-      - name: Cleanup containers
+      - name: Force cleanup after test
         if: always() # Ignore errors
         run: |
-          docker compose -f docker-compose.ci.yml down --remove-orphans
+          docker compose -f docker-compose.ci.yml down --rmi local --volumes --remove-orphans
+          docker system prune -a -f
 
   integration-test:
     needs: [unit-test, build-test]
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
+      
+      - name: Cleanup before start
+        run: |
+          docker compose -f docker-compose.ci.yml down --rmi local --volumes --remove-orphans || true
+          docker network prune -f
+
+      
       - name: Start containers
         run: docker compose -f docker-compose.ci.yml up -d
+      
+      
       - name: Wait for initialization
         run: sleep 30 # Grafana needs time to initialize
+      
+      
       - name: Run integration tests
         run: |
           pip install -r app/requirements.txt
@@ -64,6 +78,12 @@ jobs:
         # Variables to access Grafana
           GRAFANA_USER: admin
           GRAFANA_PASSWORD: admin
+
+      - name: Post-test cleanup
+        if: always()
+        run: |
+          docker compose -f docker-compose.ci.yml down --rmi local --volumes --remove-orphans
+          docker system prune -a -f
 
 
   build-and-push:
