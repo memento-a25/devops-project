@@ -7,6 +7,8 @@ services:
       - "80:5000"
     environment:
       - DATABASE_URL=postgresql://test:test@db/test
+    networks:
+      - app-network
 
   db:
     image: postgres:15
@@ -14,8 +16,29 @@ services:
       POSTGRES_USER: test
       POSTGRES_PASSWORD: test
       POSTGRES_DB: test
+    networks:
+      - app-network
+    
 
   prometheus:
     image: prom/prometheus
     ports:
       - "9090:9090"
+    networks:
+      - app-network
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+    
