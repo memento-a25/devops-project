@@ -9,6 +9,8 @@ services:
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db/${DB_NAME}
     depends_on:
       - db
+    networks:
+      - app-network
 
   db:
     image: postgres:latest
@@ -18,6 +20,8 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
+    networks:
+      - app-network
 
   prometheus:
     image: prom/prometheus
@@ -25,6 +29,8 @@ services:
       - ./monitoring/prometheus:/etc/prometheus
     ports:
       - "9090:9090"
+    networks:
+      - app-network
 
   grafana:
     image: grafana/grafana
@@ -35,7 +41,13 @@ services:
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
     depends_on:
       - prometheus
+    networks:
+      - app-network
 
 volumes:
   db_data:
   grafana_data:
+
+networks:
+  app-network:
+    driver: bridge
