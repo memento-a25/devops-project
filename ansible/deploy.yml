@@ -3,6 +3,16 @@
   become: yes
 
   tasks:
+
+    - name: Stop and remove old containers
+      docker_compose:
+        project_src: /home/github-runner/devop-blog-project
+        files:
+          - /home/github-runner/devop-blog-project
+        state: absent
+        remove_orphans: yes
+
+  
     - name: Pull latest images
       docker_compose:
         project_src: /home/github-runner/devop-blog-project
