@@ -26,4 +26,5 @@
         files:
           - /home/github-runner/devop-blog-project/docker-compose.yml
         state: present
+        recreate: always # Force containers to rebuild everytime
 
