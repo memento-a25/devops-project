@@ -1,8 +1,8 @@
+---
 - name: Update apt cache
   apt:
     update_cache: yes
     cache_valid_time: 3600  # Обновлять кэш, если он старше 1 часа
-
 
 - name: Install dependencies
   apt:
@@ -14,6 +14,7 @@
       - lsb-release
       - python3-pip
       - python3-dev
+      - python3-venv
     state: present
     update_cache: no
     force_apt_get: yes
@@ -53,18 +54,22 @@
     state: present
 
 
+- name: Create virtual environment for Docker Python module
+  command: "python3 -m venv /opt/venv/docker"
+  args:
+    creates: /opt/venv/docker # Creating venv if not exists
+
+
 - name: Install Python 3 development tools
   apt:
     name: python3-dev
     state: present
 
-
 - name: Install Docker Python module
   pip:
     name: docker
+    virtualenv: /opt/venv/docker
     state: present
-    executable: /usr/bin/pip3
-
 
 - name: Check if Docker installed correctly
   command: docker run hello-world

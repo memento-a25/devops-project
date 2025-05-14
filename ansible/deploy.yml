@@ -2,7 +2,7 @@
   hosts: all
   become: yes
   vars:
-    ansible_python_interpreter: /usr/bin/python3
+    ansible_python_interpreter: /opt/venv/docker/bin/python # Using venv python
 
   tasks:
 
