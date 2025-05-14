@@ -12,7 +12,7 @@
       - curl
       - gnupg
       - lsb-release
-      - pyhon3-pip
+      - python3-pip
     state: present
     update_cache: no
     force_apt_get: yes
