@@ -71,6 +71,12 @@
     virtualenv: /opt/venv/docker
     state: present
 
+- name: Install Docker Compose python module
+  pip:
+    name: docker-compose
+    virtualenv: /opt/venv/docker
+    state: present
+
 - name: Check if Docker installed correctly
   command: docker run hello-world
   register: docker_hello_world
