@@ -51,6 +51,14 @@
       - docker-compose-plugin
     state: present
 
+
+- name: Install Docker Python module
+  pip:
+    name: docker
+    state: present
+    executable: pip3
+
+
 - name: Check if Docker installed correctly
   command: docker run hello-world
   register: docker_hello_world
@@ -68,11 +76,3 @@
 - name: Display Output
   debug:
     var: compose_version.stdout
-
-
-- name: Install Docker Python module
-  pip:
-    name: docker
-    state: present
-    executable: pip3
-  
