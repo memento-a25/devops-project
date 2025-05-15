@@ -7,17 +7,17 @@
   tasks:
 
     - name: Stop and remove old containers
-      command: docker compose -f {{ project_dir }}/docker-compose.yml down
+      command: /usr/bin/docker compose -f {{ project_dir }}/docker-compose.yml down
       args:
         chdir: "{{ project_dir }}"
       ignore_errors: yes
   
     - name: Pull latest images
-      command: docker compose -f {{ project_dir }}/docker-compose.yml pull
+      command: /usr/bin/docker compose -f {{ project_dir }}/docker-compose.yml pull
       args:
         chdir: "{{ project_dir }}"
         
     - name: Ensure containers are running
-      command: docker compose -f {{ project_dir }}/docker-compose.yml up -d --build
+      command: /usr/bin/docker compose -f {{ project_dir }}/docker-compose.yml up -d --build
       args:
         chdir: "{{ project_dir }}"
