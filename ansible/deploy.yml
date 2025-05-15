@@ -2,22 +2,22 @@
   hosts: all
   become: yes
   vars:
-    compose_dir: "/home/github-runner/devop-blog-project"
+    project_dir: "/home/github-runner/devop-blog-project"
 
   tasks:
 
     - name: Stop and remove old containers
-      command: docker compose -f {{ compose_dir }}/docker-compose.yml down
+      command: docker compose -f {{ project_dir }}/docker-compose.yml down
       args:
-        chdir: "{{ compose_dir }}"
+        chdir: "{{ project_dir }}"
       ignore_errors: yes
   
     - name: Pull latest images
-      command: docker compose -f {{ compose_dir }}/docker-compose.yml pull
+      command: docker compose -f {{ project_dir }}/docker-compose.yml pull
       args:
-        chdir: "{{ compose_dir }}"
+        chdir: "{{ project_dir }}"
         
     - name: Ensure containers are running
-      command: docker compose -f {{ compose_dir }}/docker-compose.yml up -d --build
+      command: docker compose -f {{ project_dir }}/docker-compose.yml up -d --build
       args:
-        chdir: "{{ compose_dir }}"
+        chdir: "{{ project_dir }}"
