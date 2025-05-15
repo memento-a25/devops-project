@@ -2,31 +2,21 @@
   hosts: all
   become: yes
   vars:
-    ansible_python_interpreter: /opt/venv/docker/bin/python # Using venv python
+    compose_dir: "{{ ansible_env.HOME }}/devop-blog-project"
 
   tasks:
 
     - name: Stop and remove old containers
-      docker_compose:
-        project_src: /home/github-runner/devop-blog-project
-        files:
-          - /home/github-runner/devop-blog-project
-        state: absent
-        remove_orphans: yes
-
+      command: docker compose -f {{ compose_dir }}/docker-compose.yml down
+      args:
+        chdir: "{{ compose_dir }}"
   
     - name: Pull latest images
-      docker_compose:
-        project_src: /home/github-runner/devop-blog-project
-        pull: yes
-        files:
-          - /home/github-runner/devop-blog-project/docker-compose.yml
-
+      command: docker compose -f {{ compose_dir }}/docker-compose.yml pull
+      args:
+        chdir: "{{ compose_dir }}"
+        
     - name: Ensure containers are running
-      docker_compose:
-        project_src: /home/github-runner/devop-blog-project
-        files:
-          - /home/github-runner/devop-blog-project/docker-compose.yml
-        state: present
-        recreate: always # Force containers to rebuild everytime
-
+      command: docker compose -f {{ compose_dir }}/docker-compose.yml up -d --build
+      args:
+        chdir: "{{ compose_dir }}"
