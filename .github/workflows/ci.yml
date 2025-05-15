@@ -87,5 +87,15 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Clone full commit history, not only last one
+          path: "~/devop-blog-project"
+
+      - name: Show latest commit (debug)
+        run: |
+          cd ~/devop-blog-project
+          git log -1 --oneline
+
+          
       - name: Deploy via Ansible
         run: ansible-playbook -i ansible/inventory/hosts.ini  ansible/deploy.yml
