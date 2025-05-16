@@ -105,15 +105,20 @@ jobs:
         with:
           fetch-depth: 0 # Clone full commit history, not only last one
 
-            
-      - name: Prepare deployment directory
+     
+      - name: Sync project files
         run: |
-          rm -rf /home/github-runner/devop-blog-project/*
-          sudo mkdir -p /home/github-runner/devop-blog-project
-          cp -r $GITHUB_WORKSPACE/* /home/github-runner/devop-blog-project
-          sudo chown -R $USER:$USER /home/github-runner/devop-blog-project
-          
 
+          # Check if rsync is installed
+          if ! command -v rsync &> /dev/null; then
+            sudo apt-get update && sudo apt-get install -y rsync
+          fi
+          
+          sudo mkdir -p /home/github-runner/devop-blog-project
+          sudo rsync -a --delete $GITHUB_WORKSPACE/ /home/github-runner/devop-blog-project/
+          sudo chown -R github-runner:github-runner /home/github-runner/devop-blog-project
+          sudo chmod -R 755 /home/github-runner/devop-blog-project
+          
 
       - name: Show latest commit (debug)
         run: |
