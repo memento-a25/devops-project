@@ -108,8 +108,8 @@ jobs:
             
       - name: Prepare deployment directory
         run: |
-          sudo mkdir -p /home/github-runner/devop-blog-project
           rm -rf /home/github-runner/devop-blog-project/*
+          sudo mkdir -p /home/github-runner/devop-blog-project
           cp -r $GITHUB_WORKSPACE/* /home/github-runner/devop-blog-project
           sudo chown -R $USER:$USER /home/github-runner/devop-blog-project
           
