@@ -16,15 +16,25 @@
       command: /usr/bin/docker compose -f {{ project_dir }}/docker-compose.yml pull
       args:
         chdir: "{{ project_dir }}"
-        
-    - name: Ensure containers are running
-      command: /usr/bin/docker compose -f {{ project_dir }}/docker-compose.yml up -d --build
+
+
+    - name: Build Dcoker images
+      command: /usr/bin/docker compose -f {{ project_dir }}/docker-compose.yml build
       args:
         chdir: "{{ project_dir }}"
-      register: compose_up_result.rc !=0
+      register: build_result
+      failed_when: build_result.rc != 0
+
+        
+    - name: Start containers
+      command: /usr/bin/docker compose -f {{ project_dir }}/docker-compose.yml up -d
+      args:
+        chdir: "{{ project_dir }}"
+      register: up_result
+      failed_when: up_result.rc != 0
 
     - name: Show container logs on failure
       command: docker compose -f {{ project_dir }}/docker-compose.yml logs
       args:
         chdir: "{{ project_dir }}"
-      when: compose_up_result.failed
+      when: build_result.failed or up_result.failed
