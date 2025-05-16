@@ -104,7 +104,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Clone full commit history, not only last one
-          path: "/home/github-runner/devop-blog-project"
+
+            
+      - name: Prepare deployment directory
+        run: |
+          sudo mkdir -p /home/github-runner/devop-blog-project
+          rm -rf /home/github-runner/devop-blog-project/*
+          cp -r $GITHUB_WORKSPACE/* /home/github-runner-devop-blog-project
+          sudo chown -R $USER:$USER /home/github-runner/devop-blog-project
+          
+
 
       - name: Show latest commit (debug)
         run: |
