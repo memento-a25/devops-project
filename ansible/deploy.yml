@@ -3,6 +3,7 @@
   become: yes
   vars:
     project_dir: "/home/github-runner/devop-blog-project"
+    required_ports: [80, 3000, 9090]
   environment:
     DOCKERHUB_USERNAME: "{{ lookup ('env', 'DOCKERHUB_USERNAME') }}"
     DB_USER: "{{ lookup ('env', 'DB_USER') }}"
@@ -16,6 +17,30 @@
       args:
         chdir: "{{ project_dir }}"
       ignore_errors: yes
+
+
+    - name: Check port availability
+      shell: |
+        PORT={{ item }}
+        ss -tuln | grep "$PORT" || true
+      register: port_checks
+      loop: "{{ required_ports }}"
+      changed_when: false
+      ignore_errors: yes
+
+
+    - name: Free up ports (kill processes)
+      shell: |
+        PORT={{ item.item }}
+        PID=$(sudo ss -tulp | grep ":$PORT" | awk '{print $6}' | cut -d= -f2 | cut -d, -f1 | uniq)
+        if [ -n "$PID" ]; then
+          sudo kill -9 $PID
+          echo "Killed process $PID on port $PORT"
+        fi
+      loop: "{{ port_checks.results }}"
+      when: item.rc == 0
+      ignore_errors: yes
+
   
     - name: Pull latest images
       command: /usr/bin/docker compose -f {{ project_dir }}/docker-compose.yml pull
