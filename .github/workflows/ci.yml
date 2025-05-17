@@ -127,4 +127,9 @@ jobs:
 
           
       - name: Deploy via Ansible
-        run: ansible-playbook -i ansible/inventory/hosts.ini  ansible/deploy.yml
+        run: | 
+          export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
+          export DB_USER="${{ secrets.DB_USER }}"
+          export DB_PASSWORD="${{ secrets.DB_PASSWORD }}"
+          export DB_NAME="${{ secrets.DB_NAME }}"
+          ansible-playbook -i ansible/inventory/hosts.ini  ansible/deploy.yml
