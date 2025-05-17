@@ -12,50 +12,26 @@
     
   tasks:
 
-    - name: Stop and remove old containers
-      command: /usr/bin/docker compose -f {{ project_dir }}/docker-compose.yml down --rmi all --volumes --remove-orphans
+    - name: Force remove all project containers
+      shell: |
+        docker compose -f {{ project_dir }}/docker-compose.yml down --rmi all --volumes --remove-orphans --timeout 30 # Basic deletion via Docker Compose
+        docker rm -f $(docker ps -aq --filter "label=com.docker.compose.project=devop-blog-project") 2>/dev/null || true # Deletion using project's label named containers
       args:
         chdir: "{{ project_dir }}"
       ignore_errors: yes
-
-
-    - name: Check port availability
-      shell: |
-        PORT={{ item }}
-        ss -tuln | grep "$PORT" || true
-      register: port_checks
-      loop: "{{ required_ports }}"
-      changed_when: false
-      ignore_errors: yes
-
-
-    - name: Free up ports (kill processes)
-      shell: |
-        PORT={{ item.item }}
-        PID=$(sudo ss -tulp | grep ":$PORT" | awk '{print $6}' | cut -d= -f2 | cut -d, -f1 | uniq)
-        if [ -n "$PID" ]; then
-          sudo kill -9 $PID
-          echo "Killed process $PID on port $PORT"
-        fi
-      loop: "{{ port_checks.results }}"
-      when: item.rc == 0
-      ignore_errors: yes
-
   
     - name: Pull latest images
       command: /usr/bin/docker compose -f {{ project_dir }}/docker-compose.yml pull
       args:
         chdir: "{{ project_dir }}"
 
-
-    - name: Build Dcoker images
+    - name: Build Doсker images
       command: /usr/bin/docker compose -f {{ project_dir }}/docker-compose.yml build
       args:
         chdir: "{{ project_dir }}"
       register: build_result
       failed_when: build_result.rc != 0
-
-        
+   
     - name: Start containers
       command: /usr/bin/docker compose -f {{ project_dir }}/docker-compose.yml up -d
       args:
