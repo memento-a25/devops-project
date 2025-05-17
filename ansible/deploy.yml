@@ -14,8 +14,8 @@
 
     - name: Force remove all project containers
       shell: |
-        docker compose -f "{{ project_dir }}/docker-compose.yml" down --rmi all --volumes --remove-orphans --timeout 30 # Basic deletion via Docker Compose
-        docker rm -f $(docker ps -aq --filter "label=com.docker.compose.project=devop-blog-project") 2>/dev/null || true # Deletion using project's label named containers
+        docker compose -f "{{ project_dir }}/docker-compose.yml" down --rmi all --volumes --remove-orphans --timeout 30
+        docker rm -f $(docker ps -aq --filter "label=com.docker.compose.project=devop-blog-project") 2>/dev/null || true
       args:
         chdir: "{{ project_dir }}"
       ignore_errors: yes
