@@ -1,10 +1,10 @@
 services:
   app:
-    image: ${DOCKERHUB_USERNAME}/flask-app:latest
+    image: ${DOCKERHUB_USERNAME:-devopstestproject}/flask-app:latest
     ports:
       - "8080:5000"
     environment:
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db/${DB_NAME}
+      - DATABASE_URL=postgresql://${DB_USER:-test}:${DB_PASSWORD:-test}@db/${DB_NAME:-test}
     depends_on:
       - db
     networks:
@@ -15,9 +15,9 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER:-test}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-test}
+      POSTGRES_DB: ${DB_NAME:-test}
     networks:
       - app-network
 
