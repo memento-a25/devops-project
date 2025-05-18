@@ -24,6 +24,11 @@ jobs:
       - name: Run Unit test
         run: pytest app/tests/test_basic.py
 
+      - name: Cleanup
+        run: |
+          git restore .  # Откат отслеживаемых файлов
+          git clean -fdx  # Удаление неотслеживаемых файлов
+
 
   build-test:
     needs: unit-test
@@ -40,6 +45,11 @@ jobs:
           sleep 15 # Wait for containers to initialise
           curl --fail http://localhost:8080
           curl --fail http://localhost:9091/metrics
+
+      - name: Cleanup
+        run: |
+          git restore .  # Откат отслеживаемых файлов
+          git clean -fdx  # Удаление неотслеживаемых файлов
 
 
   integration-test:
@@ -68,6 +78,11 @@ jobs:
           GRAFANA_URL: http://localhost:3001
           GRAFANA_USER: admin
           GRAFANA_PASSWORD: admin
+
+      - name: Cleanup
+        run: |
+          git restore .  # Откат отслеживаемых файлов
+          git clean -fdx  # Удаление неотслеживаемых файлов
           
 
 
@@ -97,6 +112,11 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/flask-app:${{ github.sha }}
           labels: |
             org.opencontainers.image.source=$GITHUB_REPOSITORY_URL
+
+      - name: Cleanup
+        run: |
+          git restore .  # Откат отслеживаемых файлов
+          git clean -fdx  # Удаление неотслеживаемых файлов
 
 
   deploy:
