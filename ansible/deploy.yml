@@ -19,6 +19,12 @@
       args:
         chdir: "{{ project_dir }}"
       ignore_errors: yes
+
+
+    - name: Sleep for 10 secs
+      pause:
+        seconds: 20
+      
   
     - name: Pull latest images
       command: /usr/bin/docker compose -f "{{ project_dir }}/docker-compose.yml" pull
