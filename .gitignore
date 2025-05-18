@@ -1,7 +1,10 @@
-# Env file with passwords
-.env
-
 # Ansible Vault Secrets + Vault pass
 ansible/vars/secrets.yml
 !ansible/vars/secrets.yml.vault
 vault-password.txt
+
+# Python
+venv/
+*.pyc
+__pycache__/
+.pytest_cache/
