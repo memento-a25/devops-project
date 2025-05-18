@@ -116,8 +116,15 @@ jobs:
             sudo apt-get update && sudo apt-get install -y rsync
           fi
           
+      - name: Sync project files
+        run: |
           sudo mkdir -p /home/github-runner/devop-blog-project
-          sudo rsync -a --delete $GITHUB_WORKSPACE/ /home/github-runner/devop-blog-project/
+           sudo rsync -a --delete \
+          --exclude='venv/' \
+          --exclude='.env' \
+          --exclude='*.pyc' \
+          --exclude='__pycache__/' \
+          $GITHUB_WORKSPACE/ /home/github-runner/devop-blog-project/
           sudo chown -R github-runner:github-runner /home/github-runner/devop-blog-project
           sudo chmod -R 755 /home/github-runner/devop-blog-project
           
