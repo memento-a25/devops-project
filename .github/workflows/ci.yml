@@ -135,3 +135,18 @@ jobs:
           export DB_PASSWORD="${{ secrets.DB_PASSWORD }}"
           export DB_NAME="${{ secrets.DB_NAME }}"
           ansible-playbook -i ansible/inventory/hosts.ini  ansible/deploy.yml
+
+
+      - name: Send Telegram Notification
+        if: always() # Send even if fails
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            🚀 Workflow: ${{ github.workflow }}
+            ✅ Status: ${{ job.status }}
+            🌿 Branch: ${{ github.ref }}
+            📝 Commit: ${{ github.event.head_commit.message }}
+            👤 Author: ${{ github.actor }}
+            🔗 Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
