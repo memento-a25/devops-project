@@ -38,8 +38,8 @@ jobs:
         run: |
           docker compose -f docker-compose.ci.yml up --build -d
           sleep 15 # Wait for containers to initialise
-          curl --fail http://localhost:80
-          curl --fail http://localhost:9090/metrics
+          curl --fail http://localhost:8080
+          curl --fail http://localhost:9091/metrics
 
 
   integration-test:
@@ -65,8 +65,10 @@ jobs:
           pytest app/tests/test_integration.py -v
         env:
         # Variables to access Grafana
+          GRAFANA_URL: http://localhost:3001
           GRAFANA_USER: admin
           GRAFANA_PASSWORD: admin
+          
 
 
   package:
