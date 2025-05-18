@@ -2,7 +2,7 @@ services:
   app:
     image: ${DOCKERHUB_USERNAME}/flask-app:latest
     ports:
-      - "80:5000"
+      - "8080:5000"
     environment:
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db/${DB_NAME}
     depends_on:
@@ -26,7 +26,7 @@ services:
     volumes:
       - ./monitoring/prometheus:/etc/prometheus
     ports:
-      - "9090:9090"
+      - "9091:9090"
     networks:
       - app-network
 
