@@ -44,9 +44,18 @@
 
 ## 🚦 Quick Start
 ```bash
-# Локальный запуск
-docker compose up -d --build
+# 1. Клонировать репозиторий
+git clone https://github.com/memento-a25/jun-devops-project.git
+cd jun-devops-project
 
-# Доступные endpoints:
-curl http://localhost:8080               # Основное приложение
-curl http://localhost:8080/metrics       # Prometheus metrics
+# 2. Установить Ansible (для деплоя)
+sudo apt update && sudo apt install -y ansible
+
+# 3. Настроить окружение через Ansible (Docker, зависимости)
+ansible-playbook -i ansible/inventory/hosts.ini ansible/playbook.yml
+
+# 4. Запустить все сервисы
+sudo docker compose up -d --build
+
+# 5. Проверить работу системы (ждем 30 сек для инициализации)
+sleep 30
