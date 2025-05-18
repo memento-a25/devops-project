@@ -157,3 +157,9 @@ jobs:
             📝 Commit: ${{ github.event.head_commit.message }}
             👤 Author: ${{ github.actor }}
             🔗 Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+
+      - name: Cleanup
+        run: |
+          git clean -fdx  # Удаляет все неотслеживаемые файлы
+          git reset --hard HEAD
