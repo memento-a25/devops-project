@@ -59,3 +59,24 @@ sudo docker compose up -d --build
 
 # 5. Проверить работу системы (ждем 30 сек для инициализации)
 sleep 30
+
+
+
+
+Доступные endpoints для проверки:
+
+# Основное приложение
+curl http://localhost:8080
+
+# Метрики Prometheus
+curl http://localhost:8080/metrics
+
+# Интерфейс Prometheus (порт 9091)
+curl http://localhost:9091/targets
+
+# Grafana Dashboard (порт 3001)
+curl -u admin:admin http://localhost:3001/api/health
+
+# Проверка PostgreSQL
+sudo docker exec -it jun-devops-project-db-1 psql -U ${DB_USER} -d ${DB_NAME} -c "SELECT 1"
+
