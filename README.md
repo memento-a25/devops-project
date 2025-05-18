@@ -78,5 +78,6 @@ curl http://localhost:9091/targets
 curl -u admin:admin http://localhost:3001/api/health
 
 # Проверка PostgreSQL
-sudo docker exec -it jun-devops-project-db-1 psql -U ${DB_USER} -d ${DB_NAME} -c "SELECT 1"
+sudo docker exec -it jun-devops-project-db-1 psql -U test -d test -c "SELECT 1"
+
 
