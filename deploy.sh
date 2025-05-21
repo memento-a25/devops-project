@@ -1,4 +1,6 @@
 #!/bin/bash
+set -x # debugg mod
+set -o # pipe fail
 set -e # Stop on error
 
 # 1. Installing dependencies
