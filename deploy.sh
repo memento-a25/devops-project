@@ -17,9 +17,8 @@ install_deps() {
   echo "Updating packages..."
   sudo apt-get update -qq
 
-  local deps=(git ansible curl)
-  echo "Installing: ${deps[*]}"
-  sudo apt-get install -y --no-install-recommends "${deps[@]}"
+  echo "Installing dependencies"
+  sudo apt-get install -y --no-install-recommends git curl
 }
 
 # 3. Clonning repository
@@ -33,8 +32,18 @@ clone_repo() {
   fi
 }
 
-# 4. Running deployment
-run_deploy() {
+# 4. Setup docker-stack
+
+setup_docker() {
+  echo "Installing docker-stack"
+  ansible-playbook -i "${INSTALL_DIR}/ansible/inventory/hosts.ini" \
+    "${INSTALL_DIR}/ansible/playbook.yml"
+}
+
+
+# 5. Running deployment
+deploy_app() {
+  echo "Deploying app..."
   cd "${INSTALL_DIR}"
   ansible-playbook -i ansible/inventory/hosts.ini ansible/deploy.yml \
     -e "project_dir=${INSTALL_DIR}" \
@@ -44,7 +53,7 @@ run_deploy() {
     -e "db_name=${DB_NAME:-test}"
 }
 
-# 5. Check the result
+# 6. Check the result
 verify() {
   echo "Checking services..."
   curl -sSf http://localhost:8080
@@ -57,7 +66,8 @@ main() {
   check_distro
   install_deps
   clone_repo
-  run_deploy
+  setup_docker
+  deploy_app
   verify
 }
 
