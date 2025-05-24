@@ -2,7 +2,7 @@
   hosts: all
   become: yes
   vars:
-    project_dir: "/home/github-runner/devops-project"
+    project_dir: "{{ project_dir | default(lookup('env', 'INSTALL_DIR')) | default('/home/github-runner/devops-project') }}"
     required_ports: [8080, 3001, 9091]
   environment:
     DOCKERHUB_USERNAME: "{{ lookup ('env', 'DOCKERHUB_USERNAME') }}"
