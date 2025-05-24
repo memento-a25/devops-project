@@ -108,16 +108,13 @@ jobs:
         run: |
           rm -rf /home/github-runner/devops-project
 
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          path: /home/github-runner/devops-project
-    
-
-      - name: Debug Show last commit
+      - name: Cloning fresh copy from Github
         run: |
-          ls -la /home/github-runner/devop-blog-project
-          cd /home/github-runner/devop-blog-project && git log -1 --oneline
+          git clone https://github.com/memento-a25/devops-project.git /home/github-runner/devops-project
+
+      - name: Check if folder exists
+        run: |
+          ls -ls home/github-runner/devops-project
 
           
       - name: Deploy via Ansible
