@@ -12,6 +12,14 @@ check_distro() {
   fi
 }
 
+# 2. Check that required Ansible Collections installed (docker compose v2 module)
+check_ansible_collections() {
+  if ! ansible-galaxy collection list | grep -q 'community.docker'; then
+    echo "Installing community.docker collection..."
+    ansible-galaxy collection install community.docker -f
+  fi
+}
+
 # 2. Installing required packages
 install_deps() {
   echo "Updating packages..."
@@ -64,6 +72,7 @@ verify() {
 
 main() {
   check_distro
+  check_ansible_collections
   install_deps
   clone_repo
   setup_docker
