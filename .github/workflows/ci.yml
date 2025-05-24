@@ -108,14 +108,13 @@ jobs:
         run: |
           rm -rf /home/github-runner/devops-project
 
-      - name: Cloning fresh copy from Github
+      - name: Clone fresh code
         run: |
-          git clone https://github.com/memento-a25/devops-project.git /home/github-runner/devops-project
-
-      - name: Check if folder exists
-        run: |
-          ls -ls /home/github-runner/devops-project
-
+          git clone https://... /home/github-runner/deploy/devops-project
+          cd /home/github-runner/deploy/devops-project
+          git fetch origin $GITHUB_SHA
+          git checkout $GITHUB_SHA
+          
           
       - name: Deploy via Ansible
         run: | 
