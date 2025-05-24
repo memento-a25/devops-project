@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
-REPO_URL="https://github.com/memento-a25/jun-devops-project.git"
-INSTALL_DIR="${HOME}/georges-project"
+REPO_URL="https://github.com/memento-a25/devops-project.git"
+INSTALL_DIR="${HOME}/devops-project"
 
 # 1. Check distribution
 check_distro() {
@@ -21,7 +21,7 @@ install_deps() {
   sudo apt-get install -y --no-install-recommends git curl
 }
 
-# 3. Clonning repository
+# 3. Cloning repository
 clone_repo() {
   if [[ -d "${INSTALL_DIR}" ]]; then
     echo "Updating existing repository..."
