@@ -29,6 +29,7 @@
         docker_compose_cmd: "docker compose"
         state: absent
         remove_volumes: yes
+        remove_images: all
         timeout: 30
       ignore_errors: yes
 
