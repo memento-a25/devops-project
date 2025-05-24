@@ -26,7 +26,7 @@
       community.docker.docker_compose_v2:
         project_src: "{{ project_dir }}"
         files: "{{ compose_files }}"
-        docker_compose_cmd: "docker compose"
+        docker_cli: "docker compose"
         state: absent
         remove_volumes: yes
         remove_images: all
@@ -37,10 +37,10 @@
       community.docker.docker_compose_v2:
         project_src: "{{ project_dir }}"
         files: "{{ compose_files }}"
-        docker_compose_cmd: "docker compose"
+        docker_cli: "docker compose"
         state: present
         build: always
-        pull: no
+        pull: never
         restart: always
         environment:
           DOCKERHUB_USERNAME: "{{ lookup('env', 'DOCKERHUB_USERNAME') | default('devopstestproject') }}"
