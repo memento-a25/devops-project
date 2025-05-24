@@ -3,50 +3,56 @@
   become: yes
   vars:
     project_dir: "{{ project_dir | default('/home/github-runner/devops-project') }}"
-    required_ports: [8080, 3001, 9091]
-  environment:
-    DOCKERHUB_USERNAME: "{{ lookup ('env', 'DOCKERHUB_USERNAME') }}"
-    DB_USER: "{{ lookup ('env', 'DB_USER') }}"
-    DB_PASSWORD: "{{ lookup ('env', 'DB_PASSWORD') }}"
-    DB_NAME: "{{ lookup ('env', 'DB_NAME') }}"
+    compose_files:
+      - "docker-compose.yml"
     
   tasks:
+    - name: Validate Docker Compose v2
+      shell: docker compose version --short
+      register: docker_version
+      changed_when: false
+      failed_when:
+        - "docker_version.rc != 0"
+        - "not docker_version.stdout.startswith('2.')"
 
-    - name: Force remove all project containers
-      shell: |
-        docker compose -f "{{ project_dir }}/docker-compose.yml" down --rmi all --volumes --remove-orphans --timeout 30
-        docker rm -f $(docker ps -aq --filter "label=com.docker.compose.project=devop-blog-project") 2>/dev/null || true
-      args:
-        chdir: "{{ project_dir }}"
+    - name: Fail if version < 2.x
+      fail:
+        msg: "Requires Docker Compose v2.x.x. Current version: {{ docker_version.stdout }}"
+      when:
+        - "docker_version.rc == 0"
+        - "not docker_version.stdout.startswith('2.')"
+
+    - name: Full cleanup of previous deployment
+      community.docker.docker_compose:
+        project_src: "{{ project_dir }}"
+        files: "{{ compose_files }}"
+        docker_compose_cmd: "docker compose"
+        state: absent
+        remove_volumes: yes
+        timeout: 30
       ignore_errors: yes
 
+    - name: Build and start services (up --build)
+      community.docker.docker_compose:
+        project_src: "{{ project_dir }}"
+        files: "{{ compose_files }}"
+        docker_compose_cmd: "docker compose"
+        state: present
+        build: always
+        pull: no
+        restart: always
+        environment:
+          DOCKERHUB_USERNAME: "{{ lookup('env', 'DOCKERHUB_USERNAME') | default('devopstestproject') }}"
+          DB_USER: "{{ lookup('env', 'DB_USER') | default('test') }}"
+          DB_PASSWORD: "{{ lookup('env', 'DB_PASSWORD') | default('test') }}"
+          DB_NAME: "{{ lookup('env', 'DB_NAME') | default('test') }}"
 
-    - name: Sleep for 10 secs
-      pause:
-        seconds: 20
-      
-  
-    - name: Pull latest images
-      command: /usr/bin/docker compose -f "{{ project_dir }}/docker-compose.yml" pull
-      args:
-        chdir: "{{ project_dir }}"
+    - name: Health check services
+      uri:
+        url: http://localhost:8080
+        status_code: 200
+      register: health_check
+      until: health_check.status == 200
+      retries: 5
+      delay: 10
 
-    - name: Build Doсker images
-      command: /usr/bin/docker compose -f "{{ project_dir }}/docker-compose.yml" build
-      args:
-        chdir: "{{ project_dir }}"
-      register: build_result
-      failed_when: build_result.rc != 0
-   
-    - name: Start containers
-      command: /usr/bin/docker compose -f "{{ project_dir }}/docker-compose.yml" up -d
-      args:
-        chdir: "{{ project_dir }}"
-      register: up_result
-      failed_when: up_result.rc != 0
-
-    - name: Show container logs on failure
-      command: docker compose -f "{{ project_dir }}/docker-compose.yml" logs
-      args:
-        chdir: "{{ project_dir }}"
-      when: build_result.failed or up_result.failed
