@@ -102,16 +102,17 @@ jobs:
   deploy:
     needs: [unit-test, build-test, integration-test, package]
     runs-on: self-hosted
+    env:
+      INSTALL_DIR: "/home/github-runner/devops-project"
     steps:
-
       - name: Delete old clone
         run: |
-          rm -rf /home/github-runner/devops-project
+          rm -rf ${{ env.INSTALL_DIR }}
 
       - name: Clone fresh code
         run: |
-          git clone https://github.com/memento-a25/devops-project.git /home/github-runner/devops-project
-          cd /home/github-runner/devops-project
+          git clone https://github.com/memento-a25/devops-project.git ${{ env.INSTALL_DIR }}
+          cd ${{ env.INSTALL_DIR }}
           git fetch origin $GITHUB_SHA
           git checkout $GITHUB_SHA
           
@@ -122,9 +123,9 @@ jobs:
           export DB_USER="${{ secrets.DB_USER }}"
           export DB_PASSWORD="${{ secrets.DB_PASSWORD }}"
           export DB_NAME="${{ secrets.DB_NAME }}"
-          ansible-playbook -i /home/github-runner/devops-project/ansible/inventory/hosts.ini  /home/github-runner/devops-project/ansible/deploy.yml
+          ansible-playbook -i ${{ env.INSTALL_DIR }}/ansible/inventory/hosts.ini  ${{ env.INSTALL_DIR }}/ansible/deploy.yml -e "project_dir=${{ env.INSTALL_DIR }}"
 
-
+          
       - name: Send Telegram Notification
         if: always() # Send even if fails
         uses: appleboy/telegram-action@master
