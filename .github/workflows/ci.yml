@@ -114,7 +114,7 @@ jobs:
 
       - name: Check if folder exists
         run: |
-          ls -ls home/github-runner/devops-project
+          ls -ls /home/github-runner/devops-project
 
           
       - name: Deploy via Ansible
