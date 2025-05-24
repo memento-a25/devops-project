@@ -23,7 +23,7 @@
         - "not docker_version.stdout.startswith('2.')"
 
     - name: Full cleanup of previous deployment
-      community.docker.docker_compose:
+      community.docker.docker_compose_v2:
         project_src: "{{ project_dir }}"
         files: "{{ compose_files }}"
         docker_compose_cmd: "docker compose"
@@ -34,7 +34,7 @@
       ignore_errors: yes
 
     - name: Build and start services (up --build)
-      community.docker.docker_compose:
+      community.docker.docker_compose_v2:
         project_src: "{{ project_dir }}"
         files: "{{ compose_files }}"
         docker_compose_cmd: "docker compose"
