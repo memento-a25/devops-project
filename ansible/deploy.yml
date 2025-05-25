@@ -42,11 +42,6 @@
         build: always
         pull: never
         restart: always
-        environment:
-          DOCKERHUB_USERNAME: "{{ lookup('env', 'DOCKERHUB_USERNAME') | default('devopstestproject') }}"
-          DB_USER: "{{ lookup('env', 'DB_USER') | default('test') }}"
-          DB_PASSWORD: "{{ lookup('env', 'DB_PASSWORD') | default('test') }}"
-          DB_NAME: "{{ lookup('env', 'DB_NAME') | default('test') }}"
 
     - name: Health check services
       uri:
