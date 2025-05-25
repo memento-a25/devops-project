@@ -41,7 +41,6 @@
         state: present
         build: always
         pull: never
-        restart: always
 
     - name: Health check services
       uri:
