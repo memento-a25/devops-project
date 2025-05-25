@@ -3,6 +3,8 @@ ansible/vars/secrets.yml
 !ansible/vars/secrets.yml.vault
 vault-password.txt
 
+.env
+
 # Python
 venv/
 *.pyc
