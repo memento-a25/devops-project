@@ -8,25 +8,23 @@
     
   tasks:
     - name: Validate Docker Compose v2
-      shell: docker compose version --short
-      register: docker_version
+      shell: docker compose version --format json
+      register: docker_version_json
       changed_when: false
       failed_when:
-        - "docker_version.rc != 0"
-        - "not docker_version.stdout.startswith('2.')"
+        - "docker_version_json.rc != 0"
+        - "'v2' not in docker_version_json.stdout"
 
     - name: Fail if version < 2.x
       fail:
-        msg: "Requires Docker Compose v2.x.x. Current version: {{ docker_version.stdout }}"
-      when:
-        - "docker_version.rc == 0"
-        - "not docker_version.stdout.startswith('2.')"
+        msg: "Requires Docker Compose v2.x.x. Current version: {{ docker_version_json.stdout | from_json | json_query('version') }}"
+      when: "'v2' not in docker_version_json.stdout"
 
     - name: Full cleanup of previous deployment
       community.docker.docker_compose_v2:
         project_src: "{{ project_dir }}"
         files: "{{ compose_files }}"
-        docker_cli: "/usr/bin/docker-compose"
+        docker_cli: "docker compose"
         state: absent
         remove_volumes: yes
         remove_images: all
@@ -37,7 +35,7 @@
       community.docker.docker_compose_v2:
         project_src: "{{ project_dir }}"
         files: "{{ compose_files }}"
-        docker_cli: "/usr/bin/docker-compose"
+        docker_cli: "docker compose"
         state: present
         build: always
         pull: never
