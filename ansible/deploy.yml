@@ -14,17 +14,22 @@
         files: "{{ compose_files }}"
         state: absent
         remove_volumes: yes
-        remove_images: all
+        remove_images: local
+        remove_orphans: yes
         timeout: 30
       ignore_errors: yes
 
-    - name: Build and start services (up --build)
+    - name: Build and start services (up -d --build)
       community.docker.docker_compose_v2:
         project_src: "{{ project_dir }}"
         files: "{{ compose_files }}"
         state: present
         build: always
-        pull: never
+        pull: always
+        detached: yes
+        restart: always
+        wait: yes
+        wait_timeout: 60
 
     - name: Health check services
       uri:
