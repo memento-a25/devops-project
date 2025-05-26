@@ -42,7 +42,7 @@ check_and_install_ansible() {
 
 install_ansible_from_ppa() {
   # Defining OS type (Debian/Ubuntu)
-  OS_ID=$(grep -oP '(?<=^ID=).+' /etc/of-release | tr -d '"')
+  OS_ID=$(grep -oP '(?<=^ID=).+' /etc/os-release | tr -d '"')
 
   # For Ubuntu use its own VERSION_CODENAME
   if [[ "$OS_ID" == "ubuntu" ]]; then
