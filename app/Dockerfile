@@ -12,3 +12,5 @@ COPY . .
 ENV PATH=/root/.local/bin:$PATH
 EXPOSE 5000
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "main:app"]
+
+# TEST
