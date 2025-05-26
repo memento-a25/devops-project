@@ -26,8 +26,6 @@
         state: present
         build: always
         pull: always
-        detached: yes
-        restart: always
         wait: yes
         wait_timeout: 60
 
