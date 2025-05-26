@@ -41,10 +41,34 @@ check_and_install_ansible() {
 }
 
 install_ansible_from_ppa() {
-  # Installing ansible according to official documentation
-  UBUNTU_CODENAME=$(grep -oP '(?<=VERSION_CODENAME=).*' /etc/os-release | tr -d '"')
+  # Defining OS type (Debian/Ubuntu)
+  OS_ID=$(grep -oP '(?<=^ID=).+' /etc/of-release | tr -d '"')
 
-  echo "Adding PPA and installing Ansible"
+  # For Ubuntu use its own VERSION_CODENAME
+  if [[ "$OS_ID" == "ubuntu" ]]; then
+    UBUNTU_CODENAME=$(grep -oP '(?<=VERSION_CODENAME=).*' /etc/os-release | tr -d '"')
+    echo "Detected Ubuntu, using native codename: $UBUNTU_CODENAME"
+
+  # Using mapping for Debian
+  elif [[ "$OS_ID" == "debian" ]]; then
+    DEBIAN_CODENAME=$(grep -oP '(?<=VERSION_CODENAME=).*' /etc/os-release | tr -d '"')
+
+    case $DEBIAN_CODENAME in
+      bookworm) UBUNTU_CODENAME=jammy ;; # Debian 12 → Ubuntu 22.04
+      bullseye) UBUNTU_CODENAME=focal ;; # Debian 11 → Ubuntu 20.04
+      buster) UBUNTU_CODENAME=bionic ;; # Debian 10 → Ubuntu 18.04
+      *)       echo "Unsupported Debian version"; exit 1 ;;
+    esac
+
+    echo "Detected Debian $DEBIAN_CODENAME, mapped to Ubuntu $UBUNTU_CODENAME"
+
+  else
+    echo "Unsupported OS: $OS_ID"
+    exit 1
+  fi
+
+  # General Installation Logic
+  echo "Adding PPA for $UBUNTU_CODENAME..."
 
   sudo apt-get update -qq
   sudo apt-get install -y wget gpg
