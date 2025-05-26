@@ -7,19 +7,7 @@
       - "docker-compose.yml"
     
   tasks:
-    - name: Validate Docker Compose v2
-      shell: docker compose version --format json
-      register: docker_version_json
-      changed_when: false
-      failed_when:
-        - "docker_version_json.rc != 0"
-        - "'v2' not in docker_version_json.stdout"
-
-    - name: Fail if version < 2.x
-      fail:
-        msg: "Requires Docker Compose v2.x.x. Current version: {{ docker_version_json.stdout | from_json | json_query('version') }}"
-      when: "'v2' not in docker_version_json.stdout"
-
+    
     - name: Full cleanup of previous deployment
       community.docker.docker_compose_v2:
         project_src: "{{ project_dir }}"
