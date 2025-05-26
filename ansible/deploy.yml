@@ -12,7 +12,6 @@
       community.docker.docker_compose_v2:
         project_src: "{{ project_dir }}"
         files: "{{ compose_files }}"
-        docker_cli: "docker compose"
         state: absent
         remove_volumes: yes
         remove_images: all
@@ -23,7 +22,6 @@
       community.docker.docker_compose_v2:
         project_src: "{{ project_dir }}"
         files: "{{ compose_files }}"
-        docker_cli: "docker compose"
         state: present
         build: always
         pull: never
