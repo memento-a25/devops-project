@@ -49,6 +49,5 @@
 - Доступ к интернету
 - curl
 
-```bash
 # Запустите это в терминале:
 curl -sSL https://raw.githubusercontent.com/memento-a25/devops-project/main/deploy.sh | bash
