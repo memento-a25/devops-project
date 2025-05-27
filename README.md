@@ -49,7 +49,7 @@
 - Доступ к интернету
 - curl
 
-# Запустите это в терминале:
+> Запустите это в терминале:
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/memento-a25/devops-project/main/deploy.sh | bash
