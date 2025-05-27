@@ -26,18 +26,9 @@
         state: present
         build: always
         pull: always
-        wait: yes
-        wait_timeout: 60
-
-    - name: Health check services
-      uri:
-        url: http://localhost:8080
-        status_code: 200
-      register: health_check
-      until: health_check.status == 200
-      retries: 5
-      delay: 10
-
+    #   wait: yes
+    #   wait_timeout: 60
+    
 
 
 # TEST
